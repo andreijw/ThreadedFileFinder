@@ -13,7 +13,7 @@ namespace FileValidationHelper {
 	namespace filesystem = std::filesystem;
 	
 	/**
-	* Read the config value "MAX_FILE_PATH_LENGTH" from the environment variables
+	* @brief Read the config value "MAX_FILE_PATH_LENGTH" from the environment variables
 	*
 	* @return int value from the environment variables. Defaults to 256;
 	*/
@@ -22,7 +22,7 @@ namespace FileValidationHelper {
 	}
 
 	/** 
-	* Determine if the input directory is valid
+	* @brief Determine if the input directory is valid
 	* 
 	* @param dir_path The path to the directory to validate
 	* @return bool true if the directory exists and is a valid directory, false otherwise

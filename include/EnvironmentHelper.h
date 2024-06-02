@@ -23,7 +23,7 @@ namespace EnvironmentHelper
 	using std::max;
 
 	/**
-	* Load the environment variables from the.env file
+	* @brief Load the environment variables from the.env file
 	* 
 	* @return map<string, string> containing the environment variables
 	*/
@@ -47,7 +47,7 @@ namespace EnvironmentHelper
 	}
 
 	/**
-	* Read the config value "MAX_SEARCH_STRINGS" from the environment variables
+	* @brief Read the config value "MAX_SEARCH_STRINGS" from the environment variables
 	*
 	* @return int value from the environment variables. Defaults to cpu count in system - 2;
 	*/

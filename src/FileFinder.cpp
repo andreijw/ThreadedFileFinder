@@ -42,6 +42,11 @@ int main(int argc, char* argv[])
 
 	// Start scan on new threads
 	FileScanner::FileScanner scanner(requestedSearchStrings, argv + 2);
+	if (!scanner.StartScan(argv[1]))
+	{
+		cout << "Failed to start scan. Exiting program." << endl;
+		return 1;
+	}
 
 	// Check for dump or exit commands
 
