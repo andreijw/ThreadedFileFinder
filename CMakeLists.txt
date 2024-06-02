@@ -20,6 +20,7 @@ project ("FileFinder" VERSION 1.0 DESCRIPTION "A threaded file finder project" L
 add_executable (file-finder "${CMAKE_SOURCE_DIR}/src/FileFinder.cpp")
 target_include_directories(file-finder PRIVATE "${CMAKE_SOURCE_DIR}/include")
 target_compile_features(file-finder PUBLIC cxx_std_20)
+configure_file("${CMAKE_SOURCE_DIR}/.env" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET file-finder  PROPERTY CXX_STANDARD 20)
