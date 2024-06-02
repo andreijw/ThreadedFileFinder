@@ -4,11 +4,19 @@
 #include <fstream>
 #include <sstream>
 #include <map>
-#include <string>
 
 #include "Constants.h"
 
-using namespace std;
+using std::string;
+using std::map;
+using std::ifstream;
+using std::getline;
+using std::cerr;
+using std::exception;
+using std::endl;
+using std::stoi;
+using std::thread;
+using std::invalid_argument;
 
 namespace EnvironmentHelper
 {
@@ -53,6 +61,10 @@ namespace EnvironmentHelper
 		catch (const invalid_argument& e) {
 			cerr << e.what() << endl;
 			maxSearchStrings = thread::hardware_concurrency() - 2;
+		}
+
+		if (maxSearchStrings < 1) {
+			maxSearchStrings = 1;
 		}
 		return maxSearchStrings;
 	}

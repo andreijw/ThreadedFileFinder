@@ -9,6 +9,6 @@
 // Additional include Header files
 #include "Constants.h"
 #include "EnvironmentHelper.h"
-#include "FileValidator.h"
+#include "FileValidationHelper.h"
 
-using namespace std;
+using std::string;
