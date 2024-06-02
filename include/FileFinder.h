@@ -10,5 +10,3 @@
 #include "Constants.h"
 #include "EnvironmentHelper.h"
 #include "FileValidationHelper.h"
-
-using std::string;
