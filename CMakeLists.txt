@@ -17,7 +17,7 @@ project ("FileFinder" VERSION 1.0 DESCRIPTION "A threaded file finder project" L
 
 # Include library files.
 #include_directories($(CMAKE_SOURCE_DIR)/include)
-add_executable (file-finder "${CMAKE_SOURCE_DIR}/src/FileFinder.cpp")
+add_executable (file-finder "${CMAKE_SOURCE_DIR}/src/FileFinder.cpp" "src/FileScanner.cpp")
 target_include_directories(file-finder PRIVATE "${CMAKE_SOURCE_DIR}/include")
 target_compile_features(file-finder PUBLIC cxx_std_20)
 configure_file("${CMAKE_SOURCE_DIR}/.env" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")

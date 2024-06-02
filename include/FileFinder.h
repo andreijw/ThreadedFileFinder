@@ -10,3 +10,5 @@
 #include "Constants.h"
 #include "EnvironmentHelper.h"
 #include "FileValidationHelper.h"
+#include "StringValidationHelper.h"
+#include "FileScanner.h"

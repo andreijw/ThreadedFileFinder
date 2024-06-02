@@ -16,7 +16,8 @@ int main(int argc, char* argv[])
 
 	// Cap the number of search strings allowed. Default value is number of cpu cores - 2. To prevent the program running out of memory.
 	int maxSearchStrings = EnvironmentHelper::getMaxSearchStrings();
-	if ((argc - 2) > maxSearchStrings)
+	int requestedSearchStrings = argc - 2;
+	if (requestedSearchStrings > maxSearchStrings)
 	{
 		cout << "Too many search strings provided. Maximum allowed is " << maxSearchStrings <<  " | Update the environment file or variable to change this " << endl;
 		return 1;
@@ -29,7 +30,18 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
+	// Validate the search strings are valid string literals
+	for (int i = 2; i < argc; ++i)
+	{
+		if (!StringValidationHelper::isStringValid(argv[i]))
+		{
+			cout << "Invalid search string provided at position " << i << " . Please provide a valid search string." << endl;
+			return 1;
+		}
+	}
+
 	// Start scan on new threads
+	FileScanner::FileScanner scanner(requestedSearchStrings, argv + 2);
 
 	// Check for dump or exit commands
 
