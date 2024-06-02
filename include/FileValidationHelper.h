@@ -1,3 +1,9 @@
+/**
+* @file FileValidationHelper.h
+* 
+* This file contains some helper validation functions for file paths and directories.
+* 
+*/
 #pragma once
 
 #include <iostream>

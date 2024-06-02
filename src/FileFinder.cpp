@@ -1,5 +1,17 @@
-﻿// FileFinder.cpp : Defines the entry point for the application.
-//
+﻿/**
+* @file FileFinder.cpp
+* 
+* This file contains the main function for the FileFinder program.
+* The FileFinder program is a command line utility that searches a directory for files that contain a specific search string.
+* The user provides the directory to search and one or more search strings to look for in the files.
+* 
+* The program uses multiple threads to scan the directory in parallel. One thread is created per search string.
+* 
+* The user can enter commands while the program is running. The user can enter "dump" to see the results of the scan so far,
+* or "exit" to stop the scan and exit the program.
+* 
+* The program uses the FileScanner class to perform the scanning and searching of files.
+*/
 
 #include "FileFinder.h"
 
@@ -49,9 +61,20 @@ int main(int argc, char* argv[])
 	}
 
 	// Check for dump or exit commands
+	string command;
+	while (scanner.ScanRunning() && getline(cin, command))
+	{
+		if (command == Constants::DUMP_COMMAND)
+		{
+			scanner.DumpSanResults();
+		}
+		else if (command == Constants::EXIT_COMMAND)
+		{
+			scanner.StopScan();
+		}
+	}
 
 	// Wait for all threads to finish
-
-	cout << "Hello CMake." << endl;
+	cout << "FileScanner Complete" << endl;
 	return 0;
 }

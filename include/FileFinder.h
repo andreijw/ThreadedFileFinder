@@ -1,6 +1,9 @@
-﻿// FileFinder.h : Include file for standard system include files,
-// or project specific include files.
-
+﻿/**
+* @file FileFinder.h
+* 
+* Include file for standard system include files
+* 
+*/ 
 #pragma once
 
 #include <iostream>

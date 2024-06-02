@@ -1,3 +1,9 @@
+/**
+* @file StringValidationHelper.h
+* 
+* This file contains some helper string validation functions.
+* 
+*/
 #pragma once
 
 #include <string>

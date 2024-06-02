@@ -1,3 +1,10 @@
+/**
+* 
+* @file EnvironmentHelper.h
+* 
+* This file contains the helper functions to load the environment variables and read the config values.
+* 
+*/
 #pragma once
 
 #include <thread>

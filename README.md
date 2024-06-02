@@ -20,8 +20,12 @@ file-finder <dir> <substring1>[<substring2> [<substring3>]...]
 - Perform some basic input validation on the number of arguments, the input directory (check if it's valid), and the substrings.
 - Cap the maximum number of substrings to search for based on the number of cpu cores available on the system. There is an optional .env file that allows the user to override this value.
 - Create threads equal to the number of substrings to search for. Each thread will search for a substring in the directory tree. I will use std::jthread for the threads to allow for interruption.
-- The substring check will be done with find since there are no wildcard characters and thus there is no need to use regex. The performance of find is better than of regex. 
+- The substring check will be done with find since there are no wildcard characters and thus there is no need to use regex. The performance of find is better than of regex.
 
 # Build Process
 
 # Tests
+
+# Improvements
+- One improvement that could be made is to have a single thread search for a batch of substrings. This would be useful if there are a lot of substrings to search for. This would reduce the number of threads created and thus reduce the overhead of creating and managing threads.
+- Each thread is writing and locking the vector per file found. This could be improved by having a single thread write to the vector or only writing out a batch of files per lock, this would reduce the contention on the vector and improve performance. Another approach is to use a lock free data structure like a lock free queue
