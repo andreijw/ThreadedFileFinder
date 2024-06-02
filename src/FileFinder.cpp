@@ -27,8 +27,7 @@ int main(int argc, char* argv[])
 	}
 
 	// Cap the number of search strings allowed. Default value is number of cpu cores - 2. To prevent the program running out of memory.
-	int maxSearchStrings = EnvironmentHelper::getMaxSearchStrings();
-	int requestedSearchStrings = argc - 2;
+	int maxSearchStrings = EnvironmentHelper::getMaxSearchStrings(), requestedSearchStrings = argc - 2;
 	if (requestedSearchStrings > maxSearchStrings)
 	{
 		cout << "Too many search strings provided. Maximum allowed is " << maxSearchStrings <<  " | Update the environment file or variable to change this " << endl;
@@ -52,7 +51,7 @@ int main(int argc, char* argv[])
 		}
 	}
 
-	// Start scan on new threads
+	// Start scan on new threads for each search string. Pass in argv[2]....argv[requestedSearchStrings-1] as search strings
 	FileScanner::FileScanner scanner(requestedSearchStrings, argv + 2);
 	if (!scanner.StartScan(argv[1]))
 	{
