@@ -90,17 +90,24 @@ namespace FileScanner {
 	void FileScanner::ScanDirectory(const string& directory, const string& searchString, std::stop_source stopSource)
 	{
 		for (const auto& entry : std::filesystem::recursive_directory_iterator(directory)) {
+
 			if (stopSource.get_token().stop_requested()) {
 				break;
 			}
-			if (entry.is_regular_file()) {
-				string fileName = entry.path().filename().string();
-				if (fileName.find(searchString) != string::npos) { // Find is faster and simpler than regex for simple string matching
-					lock_guard<mutex> lock(m_mutex);
-					m_filesFound.push_back(entry.path().string());
+			try {
+				if (entry.is_regular_file()) {
+					string fileName = entry.path().filename().string();
+					if (fileName.find(searchString) != string::npos) { // Find is faster and simpler than regex for simple string matching
+						lock_guard<mutex> lock(m_mutex);
+						m_filesFound.push_back(entry.path().string());
+					}
 				}
 			}
+			catch (const std::exception& e) {
+				//Bad file or something, continue to the next file
+			}
 		}
+
 		lock_guard<mutex> lock(m_mutex);
 		++m_threadsFinished;
 	}
