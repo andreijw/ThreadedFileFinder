@@ -29,7 +29,7 @@ file-finder <dir> <substring1>[<substring2> [<substring3>]...]
 - The substring check against the filename will be done with the find function instead of regex since there are no wildcard characters. For this case the performance of find is better than of regex.
 - The threads will use a mutex to lock the vector of found files, this is to prevent race conditions. Each thread will lock the vector, and push back the new file found. A lock_guard is used to gracefully handle releasing the lock.
 - After the scan starts, the main application waits for all the threads to finish, while waiting, it reads the user input command to see if the "exit" or "dump" commands are provided in order to perform the required functionality.
-- The kbhit() function is used to aid the getline() blocking function and avoid the application from blocking on user input.
+- The _kbhit() function is used to aid the getline() blocking function and avoid the application from blocking on user input.
 - At the end  if the user provides the "exit" command, or if all the threads scanning finish, the application will gracefully exit, cleaning up all resources.
 - The application was tested on Windows 10, using Visual Studio 2022, and CMake 3.28.3.
 
@@ -70,3 +70,7 @@ make
 # Improvements
 - One improvement that could be made is to have a single thread search for a batch of substrings. This would be useful if there are a lot of substrings to search for. This would reduce the number of threads created and thus reduce the overhead of creating and managing threads.
 - Each thread is writing and locking the vector per file found. This could be improved by having a single thread write to the vector or only writing out a batch of files per lock, this would reduce the contention on the vector and improve performance. Another approach is to use a lock free data structure like a lock free queue
+- Fix the 1 non cross platform function _kbhit() to a cross platform solution.
+
+# Compatibility Issues
+- In order to easily read the user input without blocking the application, the _kbhit() function is used. This function is not part of the standard C++ library, and is only available on Windows. This function would need to be replaced with a cross platform solution in order to run on Linux or Mac systems.

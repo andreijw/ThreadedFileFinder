@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
 	string command;
 	while (scanner.ScanRunning())
 	{
-		if (kbhit()) {
+		if (_kbhit()) { // Non-crossplatform call. May need to update to curses.h or have platform specific calls for this.
 			getline(cin, command);
 			if (command == Constants::DUMP_COMMAND)
 			{
@@ -95,7 +95,6 @@ int main(int argc, char* argv[])
 			}
 		}
 	}
-	//exitSignal.set_value();
 	scanner.StopScan();
 
 	// Wait for all threads to finish
