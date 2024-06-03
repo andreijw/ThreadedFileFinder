@@ -71,6 +71,9 @@ int main(int argc, char* argv[])
 		{
 			scanner.StopScan();
 		}
+		else {
+			cout << "Invalid command: " << command << endl;
+		}
 	}
 
 	// Wait for all threads to finish

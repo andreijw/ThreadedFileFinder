@@ -16,7 +16,7 @@ namespace FileScanner {
 	*/
 	FileScanner::FileScanner(int threadNumber, char* searchStrings[])
 	{
-		m_dumpTimer = Constants::BATCH_INTERVAL_SECONDS;
+		m_dumpTimer = EnvironmentHelper::getBatchIntervalTimer();
 		m_threadNumber = threadNumber;
 		m_scanRunning = false;
 		for (int i = 0; i < threadNumber; ++i)

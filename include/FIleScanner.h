@@ -17,6 +17,7 @@
 #include <mutex>
 
 #include "Constants.h"
+#include "EnvironmentHelper.h"
 
 namespace FileScanner
 {

@@ -28,13 +28,14 @@ namespace EnvironmentHelper
 	using std::thread;
 	using std::invalid_argument;
 	using std::max;
+	using std::is_same;
 
 	/**
 	* @brief Load the environment variables from the.env file
 	* 
 	* @return map<string, string> containing the environment variables
 	*/
-	map<string, string> loadEnv() {
+	inline map<string, string> loadEnv() {
 		map<string, string> env;
 		try {
 			string line;
@@ -54,28 +55,59 @@ namespace EnvironmentHelper
 	}
 
 	/**
-	* @brief Read the config value "MAX_SEARCH_STRINGS" from the environment variables
-	*
-	* @return int value from the environment variables. Defaults to cpu count in system - 2;
+	* @brief Read the config value from the environment variables, then .env file or default value
+	* 
+	* @param configName The name of the config value to read
+	* @param defaultValue The default value to use if the config value is not set
+	* @return T value from the environment variables or default value
 	*/
-	int getMaxSearchStrings() {
+	template<typename T>
+	inline T getConfigValue(const string& configName, T defaultValue) {
 		try {
 			// First check the environment variable if set already
-			auto maxSearchStringsEnv = getenv(Constants::CORES_ENV_VAR_NAME.c_str());
-			if (maxSearchStringsEnv != nullptr) {
-				return max(1, stoi(maxSearchStringsEnv));
+			auto configValueEnv = getenv(configName.c_str());
+			if (configValueEnv != nullptr) {
+				if constexpr (is_same<T, int>::value) {
+					return stoi(configValueEnv);
+				}
+				else {
+					return static_cast<T>(configValueEnv);
+				}
 			}
 			// If not set, then check the .env file
 			map<string, string> env = loadEnv();
-			if (env.find(Constants::CORES_ENV_VAR_NAME) != env.end()) {
-				return max(1, stoi(env[Constants::CORES_ENV_VAR_NAME]));
+			if (env.find(configName) != env.end()) {
+				if constexpr (std::is_same<T, int>::value) {
+					return stoi(env[configName]);
+				}
+				else {
+					return static_cast<T>(env[configName]);
+				}
 			}
 		}
 		catch (const invalid_argument& e) {
 			cerr << e.what() << endl;
 		}
 
-		// If not set, then set it to the number of cpu cores - 2
-		return max(1, (int)(thread::hardware_concurrency() - 2));
+		// If not set, then set it to the default value
+		return defaultValue;
+	}
+
+	/**
+	* @brief Read the config value "MAX_SEARCH_STRINGS" from the environment variables
+	*
+	* @return int value from the environment variables. Defaults to cpu count in system - 2;
+	*/
+	inline int getMaxSearchStrings() {
+		return max(1, getConfigValue<int>(Constants::CORES_ENV_VAR_NAME, (int)(thread::hardware_concurrency() -2)));
+	}
+
+	/**
+	* @brief Read the config value "BATCH_INTERVAL_SECONDS_NAME" from the environment variables
+	* 
+	* @return int value from the environment variables. Defaults to 10 seconds;
+	*/
+	inline int getBatchIntervalTimer() {
+		return max(1, getConfigValue<int>(Constants::BATCH_INTERVAL_SECONDS_NAME, Constants::BATCH_INTERVAL_SECONDS));
 	}
 };

@@ -2,10 +2,8 @@
 Sensor SDE Coding Project
 
 # Problem Statement
-You are to write a command line application that searches a directory tree (i.e. - including
-subdirectories) for filenames that contain anywhere in them a specified substring.
-The application takes the directory to search as the first command line argument, followed by
-one or more substrings (literals, not wildcards) to search for:
+You are to write a command line application that searches a directory tree (i.e. - including subdirectories) for filenames that contain anywhere in them a specified substring.
+The application takes the directory to search as the first command line argument, followed by one or more substrings (literals, not wildcards) to search for:
 ```sh
 file-finder <dir> <substring1>[<substring2> [<substring3>]...]
 ```
@@ -17,6 +15,7 @@ file-finder <dir> <substring1>[<substring2> [<substring3>]...]
 - The application will run with read access to the directory and files. No ACL checks are performed.
 - There won't be that many search strings to search for. The number of search strings will be capped at the number of cpu cores available on the system. This is to prevent the application from being too slow. If a lot of search strings are needed, then I could modify the code to have a single thread search for a batch of strings, or increase the thread cap.
 - If all the search strings are found and all the threads complete their search, the application will exit without waiting for the exit command.
+- There is no need to add a "--help / -h" command line argument printing the usage of the cli, I will focus on the more important parts of the project.
 
 # Design
 - The application will be a command line application that will take the directory to search as the first command line argument, followed by one or more substrings (literals, not wildcards) to search for.
