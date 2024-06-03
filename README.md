@@ -41,10 +41,10 @@ file-finder <dir> <substring1>[<substring2> [<substring3>]...]
 - Unit testing:
 	- A main test runner would be created under the tests directory. The tests would be created as functions that included asserts to check the expected behavior of the functions.
 	- The following files would be automatically unit tested as part of the CI / CD process:
-		- FileScanner.cpp/.h by creating a FileScanner object and testing the scan functions
-		- FileValidation.h - by calling the namespace functions
-		- EnvironmentHelper.h - by calling the namespace functions
-		- StringValidation.h - by calling the namespace functions
+		- FileScanner.cpp/.h by creating a FileScanner object and testing the scan functions. (Creating directory structures with files, checking they are scanned correctly, correct number of files, no race conditions, stopping the scan, etc)
+		- FileValidation.h - by calling the namespace functions both valid and invalid inputs.
+		- EnvironmentHelper.h - by calling the namespace functions both valid and invalid inputs (Reading from environment variables, reading from the .env file, using default values if not found)
+		- StringValidation.h - by calling the namespace functions both valid and invalid inputs.
 	
 - Integration testing:
 	- Automated Integration testing would happen for the entry point of the application, the FileFinder.cpp file.
