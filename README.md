@@ -33,9 +33,25 @@ file-finder <dir> <substring1>[<substring2> [<substring3>]...]
 - At the end  if the user provides the "exit" command, or if all the threads scanning finish, the application will gracefully exit, cleaning up all resources.
 - The application was tested on Windows 10, using Visual Studio 2022, and CMake 3.28.3.
 
+# System (Versions should probably match this or be higher)
+- gcc.exe (Rev3, Built by MSYS2 project) 13.2.0
+- g++.exe (Rev3, Built by MSYS2 project) 13.2.0
+- cmake version 3.28.3-msvc11
+- Microsoft Visual Studio Professional 2022 (64-bit) - Preview Version 17.11.0 Preview 1.1
+- Windows 10
+
 # Memory Profiling
 
 # Build Process
+- The project is built using CMake, the CMakeLists.txt file is provided in the root directory. I was building it through VS 2022, but it can also be built manually as long as you have CMake and a C++ compiler installed.
+- The project is built using the following commands:
+```sh
+mdkir out
+cd out
+cmake -DCMAKE_BUILD_TYPE=Release ..
+make 
+#cmake --build . --config Release
+```
 
 # Tests (No required as part of the assignment)
 - Unit testing:
