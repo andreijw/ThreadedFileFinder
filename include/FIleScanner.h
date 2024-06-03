@@ -29,6 +29,8 @@ namespace FileScanner
 	using std::endl;
 	using std::mutex;
 	using std::lock_guard;
+	using std::stop_source;
+	using std::chrono::seconds;
 
 	class FileScanner
 	{
@@ -45,11 +47,12 @@ namespace FileScanner
 		int m_threadNumber;
 		int m_dumpTimer;
 		int m_threadsFinished;
-		std::stop_source m_sharedStopSource;
+		stop_source m_sharedStopSource;
 		vector<string> m_searchStrings;
 		vector<jthread> m_threads;
 		vector<string> m_filesFound;
 		mutex m_mutex;
-		void ScanDirectory(const string& directory, const string& searchString, std::stop_source stopSource);
+		void ScanDirectory(const string& directory, const string& searchString, stop_source stopSource);
+		void TimerDumpResults(stop_source stopSource);
 	};
 }

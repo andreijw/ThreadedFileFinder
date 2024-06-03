@@ -54,7 +54,7 @@ namespace FileScanner {
 			{
 				m_threads.push_back(jthread(&FileScanner::ScanDirectory, this, scanDirectory, m_searchStrings[i], m_sharedStopSource));
 			}
-			int x = m_threads.size();
+			m_threads.push_back(jthread(&FileScanner::TimerDumpResults, this, m_sharedStopSource));
 			return true;
 		}
 		catch (const std::exception& e) {
@@ -87,7 +87,7 @@ namespace FileScanner {
 	 * @param directory The directory to scan
 	 * @param searchString The search string to look for
 	*/
-	void FileScanner::ScanDirectory(const string& directory, const string& searchString, std::stop_source stopSource)
+	void FileScanner::ScanDirectory(const string& directory, const string& searchString, stop_source stopSource)
 	{
 		for (const auto& entry : std::filesystem::recursive_directory_iterator(directory)) {
 
@@ -133,5 +133,17 @@ namespace FileScanner {
 			cout << "Found file: " << file << endl;
 		}
 		m_filesFound.clear();
+	}
+
+	void FileScanner::TimerDumpResults(stop_source stopSource)
+	{
+		while (!stopSource.get_token().stop_requested())
+		{
+			std::this_thread::sleep_for(seconds(m_dumpTimer));
+			if (stopSource.get_token().stop_requested()) {
+				return;
+			}
+			DumpSanResults();
+		}
 	}
 }

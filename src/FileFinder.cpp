@@ -59,22 +59,28 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	// Check for dump or exit commands
+	// Check for dump or exit commands. Run the blocking getline asynchronously to allow for user input while the scan is running
 	string command;
-	while (scanner.ScanRunning() && getline(cin, command))
+	auto future = async(launch::async, [&] {getline(cin, command); });
+
+	while (scanner.ScanRunning())
 	{
-		if (command == Constants::DUMP_COMMAND)
-		{
-			scanner.DumpSanResults();
-		}
-		else if (command == Constants::EXIT_COMMAND)
-		{
-			scanner.StopScan();
-		}
-		else {
-			cout << "Invalid command: " << command << endl;
+		if (future.wait_for(chrono::milliseconds(100)) == future_status::ready) {
+			if (command == Constants::DUMP_COMMAND)
+			{
+				scanner.DumpSanResults();
+			}
+			else if (command == Constants::EXIT_COMMAND)
+			{
+				scanner.StopScan();
+			}
+			else {
+				cout << "Invalid command: " << command << endl;
+			}
+			future = std::async(launch::async, [&] { getline(cin, command); });
 		}
 	}
+	scanner.StopScan();
 
 	// Wait for all threads to finish
 	cout << "file-scanner execution complete" << endl;
