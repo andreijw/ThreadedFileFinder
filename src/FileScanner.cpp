@@ -135,15 +135,26 @@ namespace FileScanner {
 		m_filesFound.clear();
 	}
 
+	/**
+	* @brief Timer function to dump the results of the scan at regular intervals
+	 *
+	 * @param stopSource The stop source to check if the scan has been stopped
+	*/
 	void FileScanner::TimerDumpResults(stop_source stopSource)
 	{
+		int elapsedSeconds = 0;
 		while (!stopSource.get_token().stop_requested())
 		{
-			std::this_thread::sleep_for(seconds(m_dumpTimer));
+			std::this_thread::sleep_for(seconds(1));
+			++elapsedSeconds;
 			if (stopSource.get_token().stop_requested()) {
 				return;
 			}
-			DumpSanResults();
+			if (elapsedSeconds >= m_dumpTimer)
+			{
+				DumpSanResults();
+				elapsedSeconds = 0;
+			}
 		}
 	}
 }
