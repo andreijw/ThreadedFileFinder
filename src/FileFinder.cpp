@@ -77,6 +77,6 @@ int main(int argc, char* argv[])
 	}
 
 	// Wait for all threads to finish
-	cout << "FileScanner Complete" << endl;
+	cout << "file-scanner execution complete" << endl;
 	return 0;
 }

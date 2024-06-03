@@ -14,11 +14,10 @@ namespace FileScanner {
 	* @param threadNumber The number of threads to use for the scan
 	* @param searchStrings The search strings to use for the scan
 	*/
-	FileScanner::FileScanner(int threadNumber, char* searchStrings[])
+	FileScanner::FileScanner(int threadNumber, char* searchStrings[]) : m_threadNumber(threadNumber), m_threadsFinished(0)
 	{
 		m_dumpTimer = EnvironmentHelper::getBatchIntervalTimer();
-		m_threadNumber = threadNumber;
-		m_scanRunning = false;
+		;
 		for (int i = 0; i < threadNumber; ++i)
 		{
 			// Allocate space in the system, but don't actually start the threads. This will be done in the StartScan function
@@ -51,10 +50,9 @@ namespace FileScanner {
 	{
 		cout << "Starting scan on path: " << scanDirectory << endl;
 		try {
-			m_scanRunning = true;
 			for (int i = 0; i < m_threadNumber; ++i)
 			{
-				m_threads.push_back(jthread(&FileScanner::ScanDirectory, this, scanDirectory, m_searchStrings[i]));
+				m_threads.push_back(jthread(&FileScanner::ScanDirectory, this, scanDirectory, m_searchStrings[i], m_sharedStopSource));
 			}
 			int x = m_threads.size();
 			return true;
@@ -72,14 +70,8 @@ namespace FileScanner {
 	*/
 	bool FileScanner::StopScan()
 	{
-		cout << "Stopping scan" << endl;
-		m_scanRunning = false;
-
 		try {
-			for (auto& thread : m_threads)
-			{
-				thread.request_stop();
-			}
+			m_sharedStopSource.request_stop();
 			DumpSanResults();
 			return true;
 		}
@@ -95,9 +87,12 @@ namespace FileScanner {
 	 * @param directory The directory to scan
 	 * @param searchString The search string to look for
 	*/
-	void FileScanner::ScanDirectory(const string& directory, const string& searchString)
+	void FileScanner::ScanDirectory(const string& directory, const string& searchString, std::stop_source stopSource)
 	{
 		for (const auto& entry : std::filesystem::recursive_directory_iterator(directory)) {
+			if (stopSource.get_token().stop_requested()) {
+				break;
+			}
 			if (entry.is_regular_file()) {
 				string fileName = entry.path().filename().string();
 				if (fileName.find(searchString) != string::npos) { // Find is faster and simpler than regex for simple string matching
@@ -106,6 +101,8 @@ namespace FileScanner {
 				}
 			}
 		}
+		lock_guard<mutex> lock(m_mutex);
+		++m_threadsFinished;
 	}
 
 	/**
@@ -115,7 +112,7 @@ namespace FileScanner {
 	*/
 	bool FileScanner::ScanRunning() const
 	{
-		return m_scanRunning;
+		return m_threadsFinished != m_threadNumber;
 	}
 
 	/**

@@ -10,11 +10,12 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
+#include <filesystem>
 #include <thread>
 #include <chrono>
-#include <filesystem>
-#include <iostream>
 #include <mutex>
+#include <stop_token>
 
 #include "Constants.h"
 #include "EnvironmentHelper.h"
@@ -43,11 +44,12 @@ namespace FileScanner
 	private:
 		int m_threadNumber;
 		int m_dumpTimer;
-		bool m_scanRunning;
+		int m_threadsFinished;
+		std::stop_source m_sharedStopSource;
 		vector<string> m_searchStrings;
 		vector<jthread> m_threads;
 		vector<string> m_filesFound;
 		mutex m_mutex;
-		void ScanDirectory(const string& directory, const string& searchString);
+		void ScanDirectory(const string& directory, const string& searchString, std::stop_source stopSource);
 	};
 }
