@@ -13,32 +13,41 @@
 * The program uses the FileScanner class to perform the scanning and searching of files.
 */
 
-#include "FileFinder.h"
+#include <chrono>
+#include <conio.h>
+#include <iostream>
+#include <thread>
+
+#include "Constants.h"
+#include "EnvironmentHelper.h"
+#include "FileScanner.h"
+#include "FileValidationHelper.h"
+#include "StringValidationHelper.h"
 
 using namespace std;
 
-int main(int argc, char* argv[])
+static bool validateArguments(int argc, char* argv[])
 {
 	// Ensure the user has provided the correct number of arguments. Directory and at least one substring are required.
 	if (argc < 3)
 	{
-		cout << "Usage: FileFinder <directory> <substring1> [<substring2> ... ]" << endl;
-		return 1;
+		cerr << "Usage: FileFinder <directory> <substring1> [<substring2> ... ]" << endl;
+		return false;
 	}
 
 	// Cap the number of search strings allowed. Default value is number of cpu cores - 2. To prevent the program running out of memory.
 	int maxSearchStrings = EnvironmentHelper::getMaxSearchStrings(), requestedSearchStrings = argc - 2;
 	if (requestedSearchStrings > maxSearchStrings)
 	{
-		cout << "Too many search strings provided. Maximum allowed is " << maxSearchStrings <<  " | Update the environment file or variable to change this " << endl;
-		return 1;
+		cerr << "Too many search strings provided. Maximum allowed is " << maxSearchStrings << " | Update the environment file or variable to change this " << endl;
+		return false;
 	}
 
 	// Validate the directory path provided by the user
 	if (!FileValidationHelper::isValidDirectory(argv[1]))
 	{
-		cout << "Invalid directory path provided. Please provide a valid directory path." << endl;
-		return 1;
+		cerr << "Invalid directory path provided. Please provide a valid directory path." << endl;
+		return false;
 	}
 
 	// Validate the search strings are valid string literals
@@ -46,16 +55,24 @@ int main(int argc, char* argv[])
 	{
 		if (!StringValidationHelper::isStringValid(argv[i]))
 		{
-			cout << "Invalid search string provided at position " << i << " . Please provide a valid search string." << endl;
-			return 1;
+			cerr << "Invalid search string provided at position " << i << " . Please provide a valid search string." << endl;
+			return false;
 		}
+	}
+	return true;
+}
+
+int main(int argc, char* argv[])
+{
+	if (!validateArguments(argc, argv)) {
+		return 1;
 	}
 
 	// Start scan on new threads for each search string. Pass in argv[2]....argv[requestedSearchStrings-1] as search strings
-	FileScanner::FileScanner scanner(requestedSearchStrings, argv + 2);
+	FileScanner::FileScanner scanner(argc - 2, argv + 2);
 	if (!scanner.StartScan(argv[1]))
 	{
-		cout << "Failed to start scan. Exiting program." << endl;
+		cerr << "Failed to start scan. Exiting program." << endl;
 		return 1;
 	}
 

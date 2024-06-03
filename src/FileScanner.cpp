@@ -17,7 +17,6 @@ namespace FileScanner {
 	FileScanner::FileScanner(int threadNumber, char* searchStrings[]) : m_threadNumber(threadNumber), m_threadsFinished(0)
 	{
 		m_dumpTimer = EnvironmentHelper::getBatchIntervalTimer();
-		;
 		for (int i = 0; i < threadNumber; ++i)
 		{
 			// Allocate space in the system, but don't actually start the threads. This will be done in the StartScan function
@@ -31,8 +30,6 @@ namespace FileScanner {
 	*/
 	FileScanner::~FileScanner()
 	{
-		m_searchStrings.clear();
-		m_filesFound.clear();
 		for (auto& thread : m_threads)
 		{
 			thread.join();
@@ -46,15 +43,15 @@ namespace FileScanner {
 	 * @param scanDirectory The directory to scan
 	 * @return bool True if the scan was started successfully, false otherwise
 	*/
-	bool FileScanner::StartScan(const string& scanDirectory)
+	bool FileScanner::StartScan(const std::string& scanDirectory)
 	{
-		cout << "Starting scan on path: " << scanDirectory << endl;
+		std::cout << "Starting scan on path: " << scanDirectory << std::endl;
 		try {
 			for (int i = 0; i < m_threadNumber; ++i)
 			{
-				m_threads.push_back(jthread(&FileScanner::ScanDirectory, this, scanDirectory, m_searchStrings[i], m_sharedStopSource));
+				m_threads.push_back(std::jthread(&FileScanner::ScanDirectory, this, scanDirectory, m_searchStrings[i], m_sharedStopSource));
 			}
-			m_threads.push_back(jthread(&FileScanner::TimerDumpResults, this, m_sharedStopSource));
+			m_threads.push_back(std::jthread(&FileScanner::TimerDumpResults, this, m_sharedStopSource));
 			return true;
 		}
 		catch (const std::exception& e) {
@@ -87,7 +84,7 @@ namespace FileScanner {
 	 * @param directory The directory to scan
 	 * @param searchString The search string to look for
 	*/
-	void FileScanner::ScanDirectory(const string& directory, const string& searchString, stop_source stopSource)
+	void FileScanner::ScanDirectory(const std::string& directory, const std::string& searchString, std::stop_source stopSource)
 	{
 		for (const auto& entry : std::filesystem::recursive_directory_iterator(directory)) {
 
@@ -96,9 +93,9 @@ namespace FileScanner {
 			}
 			try {
 				if (entry.is_regular_file()) {
-					string fileName = entry.path().filename().string();
-					if (fileName.find(searchString) != string::npos) { // Find is faster and simpler than regex for simple string matching
-						lock_guard<mutex> lock(m_mutex);
+					std::string fileName = entry.path().filename().string();
+					if (fileName.find(searchString) != std::string::npos) { // Find is faster and simpler than regex for simple string matching
+						std::lock_guard<std::mutex> lock(m_mutex);
 						m_filesFound.push_back(entry.path().string());
 					}
 				}
@@ -108,7 +105,7 @@ namespace FileScanner {
 			}
 		}
 
-		lock_guard<mutex> lock(m_mutex);
+		std::lock_guard<std::mutex> lock(m_mutex);
 		++m_threadsFinished;
 	}
 
@@ -127,10 +124,10 @@ namespace FileScanner {
 	*/
 	void FileScanner::DumpSanResults()
 	{
-		lock_guard<mutex> lock(m_mutex);
+		std::lock_guard<std::mutex> lock(m_mutex);
 		for (const auto& file : m_filesFound)
 		{
-			cout << "Found file: " << file << endl;
+			std::cout << "Found file: " << file << std::endl;
 		}
 		m_filesFound.clear();
 	}
@@ -140,12 +137,12 @@ namespace FileScanner {
 	 *
 	 * @param stopSource The stop source to check if the scan has been stopped
 	*/
-	void FileScanner::TimerDumpResults(stop_source stopSource)
+	void FileScanner::TimerDumpResults(std::stop_source stopSource)
 	{
 		int elapsedSeconds = 0;
 		while (!stopSource.get_token().stop_requested())
 		{
-			std::this_thread::sleep_for(seconds(1));
+			std::this_thread::sleep_for(std::chrono::seconds(1));
 			++elapsedSeconds;
 			if (stopSource.get_token().stop_requested()) {
 				return;

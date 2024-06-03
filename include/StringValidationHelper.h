@@ -9,8 +9,6 @@
 #include <string>
 
 namespace StringValidationHelper {
-	using std::string;
-
 	/**
 	* @brief Check to see if the string is valid
 	* 

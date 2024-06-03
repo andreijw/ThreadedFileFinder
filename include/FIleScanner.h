@@ -8,37 +8,27 @@
 */
 #pragma once
 
-#include <string>
-#include <vector>
-#include <iostream>
-#include <filesystem>
-#include <thread>
 #include <chrono>
+#include <filesystem>
+#include <iostream>
 #include <mutex>
+#include <string>
 #include <stop_token>
+#include <thread>
+#include <vector>
 
 #include "Constants.h"
 #include "EnvironmentHelper.h"
 
 namespace FileScanner
 {
-	using std::string;
-	using std::vector;
-	using std::jthread;
-	using std::cout;
-	using std::endl;
-	using std::mutex;
-	using std::lock_guard;
-	using std::stop_source;
-	using std::chrono::seconds;
-
 	class FileScanner
 	{
 	public:
 		FileScanner(int threadNumber, char* searchStrings[]);
 		~FileScanner();
 
-		bool StartScan(const string& scanDirectory);
+		bool StartScan(const std::string& scanDirectory);
 		bool StopScan();
 		bool ScanRunning() const;
 		void DumpSanResults();
@@ -47,12 +37,12 @@ namespace FileScanner
 		int m_threadNumber;
 		int m_dumpTimer;
 		int m_threadsFinished;
-		stop_source m_sharedStopSource;
-		vector<string> m_searchStrings;
-		vector<jthread> m_threads;
-		vector<string> m_filesFound;
-		mutex m_mutex;
-		void ScanDirectory(const string& directory, const string& searchString, stop_source stopSource);
-		void TimerDumpResults(stop_source stopSource);
+		std::stop_source m_sharedStopSource;
+		std::vector<std::string> m_searchStrings;
+		std::vector<std::jthread> m_threads;
+		std::vector<std::string> m_filesFound;
+		std::mutex m_mutex;
+		void ScanDirectory(const std::string& directory, const std::string& searchString, std::stop_source stopSource);
+		void TimerDumpResults(std::stop_source stopSource);
 	};
-}
+};
