@@ -13,9 +13,13 @@
 * The program uses the FileScanner class to perform the scanning and searching of files.
 */
 
+#include <algorithm>
 #include <chrono>
 #include <conio.h>
+#include <cctype>
 #include <iostream>
+#include <ranges>
+#include <string>
 #include <thread>
 
 #include "Constants.h"
@@ -80,8 +84,10 @@ int main(int argc, char* argv[])
 	string command;
 	while (scanner.ScanRunning())
 	{
-		if (_kbhit()) { // Non-crossplatform call. May need to update to curses.h or have platform specific calls for this.
+		if (_kbhit()) { // Non-cross-platform call. May need to update to curses.h or have platform specific calls for this.
 			getline(cin, command);
+			std::ranges::transform(command, command.begin(), ::tolower);
+			
 			if (command == Constants::DUMP_COMMAND)
 			{
 				scanner.DumpSanResults();

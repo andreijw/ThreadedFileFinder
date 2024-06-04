@@ -41,6 +41,7 @@ file-finder <dir> <substring1>[<substring2> [<substring3>]...]
 - Windows 10
 
 # Memory Profiling
+- The memory profiling for the application was done with the Visual Studio 2022 memory profiler. 
 
 # Build Process
 - The project is built using CMake, the CMakeLists.txt file is provided in the root directory. I was building it through VS 2022, but it can also be built manually as long as you have CMake and a C++ compiler installed.
@@ -71,6 +72,8 @@ make
 - One improvement that could be made is to have a single thread search for a batch of substrings. This would be useful if there are a lot of substrings to search for. This would reduce the number of threads created and thus reduce the overhead of creating and managing threads.
 - Each thread is writing and locking the vector per file found. This could be improved by having a single thread write to the vector or only writing out a batch of files per lock, this would reduce the contention on the vector and improve performance. Another approach is to use a lock free data structure like a lock free queue
 - Fix the 1 non cross platform function _kbhit() to a cross platform solution.
+- Add a file count variable to the FileScanner object to keep track of the number of files scanned, this would be useful for the dump command.
+- Better test the memory pressure and look for memory leaks using Valgrind or Dr.Memory.
 
 # Compatibility Issues
 - In order to easily read the user input without blocking the application, the _kbhit() function is used. This function is not part of the standard C++ library, and is only available on Windows. This function would need to be replaced with a cross platform solution in order to run on Linux or Mac systems.

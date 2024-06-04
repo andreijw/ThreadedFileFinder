@@ -20,7 +20,7 @@ namespace FileScanner {
 		for (int i = 0; i < threadNumber; ++i)
 		{
 			// Allocate space in the system, but don't actually start the threads. This will be done in the StartScan function
-			m_searchStrings.push_back(searchStrings[i]);
+			m_searchStrings.push_back(std::string(searchStrings[i]));
 		}
 		m_threads.reserve(threadNumber);
 	}
